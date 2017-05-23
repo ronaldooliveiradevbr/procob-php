@@ -17,7 +17,7 @@ var_dump($response);
 #### Token criado a partir do usuário e senha
 
 ```php
-$apiKey = base64_encode('sandbox@procob.com:TesteApi');
+$apiKey = base64_encode('username:password');
 ```
 
 
