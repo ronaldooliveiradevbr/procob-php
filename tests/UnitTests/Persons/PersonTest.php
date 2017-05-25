@@ -1,11 +1,11 @@
 <?php
 
-namespace Procob\Tests\UnitTests\Procob\Entities;
+namespace Procob\Tests\UnitTests\Procob\Persons;
 
 use \DateTimeImmutable;
 use \Faker\Provider\pt_BR\Person as FakerPerson;
 use \PHPUnit\Framework\TestCase;
-use Procob\Entities\Person;
+use Procob\Persons\Person;
 
 class PersonTest extends TestCase
 {
@@ -17,7 +17,7 @@ class PersonTest extends TestCase
         );
 
         $this->assertTrue(
-            class_exists($class = 'Procob\Entities\Person'),
+            class_exists($class = 'Procob\Persons\Person'),
             sprintf(
                 "Class not found: %s",
                 print_r($class, true)
@@ -28,7 +28,7 @@ class PersonTest extends TestCase
     public function testInstantiatePersonWithNoArgumentsShouldWork()
     {
         $this->assertEquals(
-            'Procob\Entities\Person',
+            'Procob\Persons\Person',
             get_class(new Person)
         );
     }

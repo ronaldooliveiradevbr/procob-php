@@ -11,6 +11,7 @@ namespace Procob;
 use \InvalidArgumentException;
 use \GuzzleHttp\Client as HttpClient;
 use \GuzzleHttp\Psr7\Request;
+use Procob\PersonProvider;
 
 class Procob
 {

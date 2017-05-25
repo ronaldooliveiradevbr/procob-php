@@ -6,12 +6,13 @@
  * @version 1.0.0
  * @license https://opensource.org/licenses/MIT MIT License
  */
-namespace Procob\Entities;
+namespace Procob\Persons;
 
 use \DateTimeImmutable;
 use \InvalidArgumentException;
+use Procob\Contracts\EntityInterface as Entity;
 
-class Person
+class Person implements Entity
 {
     /**
      * @var string $document
