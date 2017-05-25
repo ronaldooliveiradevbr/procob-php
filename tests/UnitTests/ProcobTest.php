@@ -7,6 +7,7 @@ use \Faker\Provider\pt_BR\Person;
 use \InvalidArgumentException;
 use \PHPUnit\Framework\TestCase;
 use Procob\Procob;
+use Procob\Persons\PersonGateway;
 
 class ProcobTest extends TestCase
 {
@@ -75,7 +76,7 @@ class ProcobTest extends TestCase
             'https://api.procob.com/consultas/teste'
         );
 
-        $this->assertEquals('000', $response->code);
+        $this->assertEquals('000', $response['code']);
     }
 
     /**
@@ -91,7 +92,10 @@ class ProcobTest extends TestCase
         $uri = 'L0001/' . $faker->cpf(false);
         $response = $procob->send('GET', $uri);
 
-        $this->assertObjectHasAttribute('nome', $response->content);
+        $this->assertArrayHasKey(
+            'nome',
+            $response['content']
+        );
     }
 
     /**
@@ -107,6 +111,31 @@ class ProcobTest extends TestCase
         $uri = 'L0001/' . $faker->cnpj(false);
         $response = $procob->send('GET', $uri);
 
-        $this->assertObjectHasAttribute('nome', $response->content);
+        $this->assertArrayHasKey(
+            'nome',
+            $response['content']
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function mustReturnPersonGatewayObject()
+    {
+        $procob = $this->getMockBuilder(Procob::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $personGateway = $this->getMockBuilder(PersonGateway::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $procob->method('person')
+            ->willReturn($personGateway);
+
+        $this->assertInstanceOf(
+            PersonGateway::class,
+            $procob->person()
+        );
     }
 }
