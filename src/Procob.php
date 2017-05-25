@@ -1,7 +1,14 @@
 <?php
-
+/**
+ * Procob API facade
+ *
+ * @author Ronaldo Oliveira <rfdeoliveira.pmsp@gmail.com>
+ * @version 1.0.0
+ * @license https://opensource.org/licenses/MIT MIT License
+ */
 namespace Procob;
 
+use \InvalidArgumentException;
 use \GuzzleHttp\Client as HttpClient;
 use \GuzzleHttp\Psr7\Request;
 
@@ -18,10 +25,10 @@ class Procob
     private $httpClient;
 
     /**
-     * Procob's facade constructor.
+     * Procob's API facade constructor.
      *
      * @param string|array $apiKey Api token or array containing username and password
-     * @param array $headers
+     * @param array $headers HTTP Headers
      * @param integer $timeout
      */
     public function __construct(
@@ -33,7 +40,7 @@ class Procob
             && count($apiKey) == 2)
             && ! is_string($apiKey)
         ) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     "The API credentials %s are not valid",
                     print_r($apiKey, true)
@@ -59,6 +66,9 @@ class Procob
      *
      * @param string $method
      * @param string $uri
+     * @return \stdClass
+     * @throws \GuzzleHttp\Exception\ClientException
+     * @throws \GuzzleHttp\Exception\RequestException
      */
     public function send($method, $uri)
     {
