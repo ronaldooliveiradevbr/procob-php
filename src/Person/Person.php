@@ -6,13 +6,13 @@
  * @version 1.0.0
  * @license https://opensource.org/licenses/MIT MIT License
  */
-namespace Procob\Persons;
+namespace Procob\Person;
 
 use \DateTimeImmutable;
 use \InvalidArgumentException;
 use Procob\Contracts\EntityInterface as Entity;
 
-class Person implements Entity
+final class Person implements Entity
 {
     /**
      * @var string $document
@@ -164,10 +164,10 @@ class Person implements Entity
      */
     public function setAge($age)
     {
-        if (! is_integer($age)) {
+        if (! is_numeric($age)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    "Person's age must be a integer value:%s is not valid!",
+                    "Person's age must be a number: %s is not valid!",
                     print_r($age, true)
                 )
             );

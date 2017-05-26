@@ -2,12 +2,13 @@
 
 namespace Procob\Tests\UnitTests\Procob;
 
+use Procob\Procob;
+use Procob\Response;
+use Procob\Request\TestGet;
+use Procob\Person\PersonGateway;
 use \Faker\Provider\pt_BR\Company;
 use \Faker\Provider\pt_BR\Person;
-use \InvalidArgumentException;
 use \PHPUnit\Framework\TestCase;
-use Procob\Procob;
-use Procob\Persons\PersonGateway;
 
 class ProcobTest extends TestCase
 {
@@ -34,24 +35,37 @@ class ProcobTest extends TestCase
         );
     }
 
-    public function testAuthenticationWithValidApiTokenMustWork()
+    /**
+     * @test
+     */
+    public function mustAuthenticateWithApiToken()
     {
         $procob = new Procob($this->apiKey);
 
-        $this->assertInstanceOf(Procob::class, $procob);
-    }
-
-    public function testAuthenticationWithValidCredentialsArrayWork()
-    {
-        $procob = new Procob($this->credentials);
-
-        $this->assertInstanceOf(Procob::class, $procob);
+        $this->assertInstanceOf(
+            Procob::class,
+            $procob
+        );
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @test
      */
-    public function testAuthenticationWithInvalidCredentialsMustThrowAnException()
+    public function mustAuthenticateWithUsernameAndPassword()
+    {
+        $procob = new Procob($this->credentials);
+
+        $this->assertInstanceOf(
+            Procob::class,
+            $procob
+        );
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function mustThrowAnExceptionWithInvalidCredentials()
     {
         $invalidCredentials = [
             123456789,
@@ -65,73 +79,52 @@ class ProcobTest extends TestCase
     }
 
     /**
-     * @depends testAuthenticationWithValidApiTokenMustWork
+     * @test
+     * @depends mustAuthenticateWithApiToken
      */
-    public function testCallingTestEndpointShouldReturnCode000()
+    public function mustReturnCode000OnNewTestRequest()
     {
         $procob = new Procob($this->apiKey);
 
-        $response = $procob->send(
-            'GET',
-            'https://api.procob.com/consultas/teste'
+        $response = $procob->send(new TestGet);
+
+        $this->assertInstanceOf(
+            Response::class,
+            $response
         );
 
-        $this->assertEquals('000', $response['code']);
-    }
-
-    /**
-     * @depends testAuthenticationWithValidApiTokenMustWork
-     */
-    public function testSearchByCpfShouldRetrieveCustomerName()
-    {
-        $procob = new Procob($this->apiKey);
-
-        $faker = \Faker\Factory::create();
-        $faker->addProvider(new Person($faker));
-
-        $uri = 'L0001/' . $faker->cpf(false);
-        $response = $procob->send('GET', $uri);
-
-        $this->assertArrayHasKey(
-            'nome',
-            $response['content']
-        );
-    }
-
-    /**
-     * @depends testAuthenticationWithValidApiTokenMustWork
-     */
-    public function testSearchByCnpjShouldRetrieveCompanyName()
-    {
-        $procob = new Procob($this->apiKey);
-
-        $faker = \Faker\Factory::create();
-        $faker->addProvider(new Company($faker));
-
-        $uri = 'L0001/' . $faker->cnpj(false);
-        $response = $procob->send('GET', $uri);
-
-        $this->assertArrayHasKey(
-            'nome',
-            $response['content']
-        );
+        $this->assertEquals('000', $response->getCode());
     }
 
     /**
      * @test
+     * @depends mustAuthenticateWithApiToken
      */
-    public function mustReturnPersonGatewayObject()
+    public function mustReturnSameResponseObject()
     {
-        $procob = $this->getMockBuilder(Procob::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $procob = new Procob($this->apiKey);
 
-        $personGateway = $this->getMockBuilder(PersonGateway::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $responseA = $procob->getResponse(new TestGet);
+        $responseB = $procob->getResponse();
 
-        $procob->method('person')
-            ->willReturn($personGateway);
+        $this->assertSame($responseA, $responseB);
+    }
+
+    /**
+     * @test
+     * @depends mustAuthenticateWithApiToken
+     */
+    public function mustReturnSamePersonGatewayObject()
+    {
+        $procob = new Procob($this->apiKey);
+
+        $firstPersonGateway = $procob->person();
+        $secondPersonGateway = $procob->person();
+
+        $this->assertSame(
+            $firstPersonGateway,
+            $secondPersonGateway
+        );
 
         $this->assertInstanceOf(
             PersonGateway::class,

@@ -11,7 +11,8 @@ namespace Procob;
 use \InvalidArgumentException;
 use \GuzzleHttp\Client as HttpClient;
 use \GuzzleHttp\Psr7\Request;
-use Procob\Persons\PersonGateway;
+use Procob\Contracts\RequestInterface;
+use Procob\Person\PersonGateway;
 
 class Procob
 {
@@ -24,6 +25,11 @@ class Procob
      * @var \GuzzleHttp\Client
      */
     private $httpClient;
+
+    /**
+     * @var Procob\Response
+     */
+    private $response;
 
     /**
      * @var Procob\Persons\PersonGateway
@@ -76,15 +82,20 @@ class Procob
      * @throws \GuzzleHttp\Exception\ClientException
      * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function send($method, $uri)
+    public function send(RequestInterface $request)
     {
-        $request = new Request($method, $uri);
+        $request = new Request(
+            $request->method(),
+            $request->uri()
+        );
 
         try {
             $response = $this->httpClient->send($request);
-            return json_decode(
-                $response->getBody()->getContents(),
-                true
+
+            return $this->response = new Response(
+                json_decode(
+                    $response->getBody()->getContents()
+                )
             );
         } catch (\GuzzleHttp\Exception\ClientException $exception) {
             $response = $exception->getResponse()
@@ -101,6 +112,15 @@ class Procob
                 $exception->getCode()
             );
         }
+    }
+
+    public function getResponse(RequestInterface $request = null)
+    {
+        if (is_null($this->response) && ! is_null($request)) {
+            return $this->send($request);
+        }
+
+        return $this->response;
     }
 
     public function person()
