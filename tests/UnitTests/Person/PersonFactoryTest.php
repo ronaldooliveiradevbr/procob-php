@@ -29,14 +29,13 @@ class PersonFactoryTest extends TestCase
             'uf'                    => "SP",
             'situacao_receita'      => 'IRREGULAR',
             'situacao_receita_data' => '2017-01-01',
-            'situacao_receita_hora' => "00:00:00"
+            'situacao_receita_hora' => '00:00:00'
         ];
 
         $this->assertInstanceOf(
             Person::class,
             $person = PersonFactory::create($data)
         );
-
         $this->assertEquals(
             $data['documento'],
             $person->getDocument()
@@ -44,6 +43,38 @@ class PersonFactoryTest extends TestCase
         $this->assertEquals(
             $data['nome'],
             $person->getName()
+        );
+        $this->assertEquals(
+            $data['data_nascimento'],
+            $person->getBirthday()->format('d/m/Y')
+        );
+        $this->assertEquals(
+            $data['idade'],
+            $person->getAge()
+        );
+        $this->assertEquals(
+            $data['signo'],
+            $person->getZodiacSign()
+        );
+        $this->assertEquals(
+            $data['obito'],
+            $person->getObituary()
+        );
+        $this->assertEquals(
+            $data['sexo'],
+            $person->getGender()
+        );
+        $this->assertEquals(
+            $data['uf'],
+            $person->getLivedIn()
+        );
+        $this->assertEquals(
+            $data['situacao_receita'],
+            $person->getIrpfStatus()
+        );
+        $this->assertEquals(
+            sprintf("%s %s", $data['situacao_receita_data'], $data['situacao_receita_hora']),
+            $person->getIrpfVerifiedAt()->format('Y-m-d H:i:s')
         );
     }
 }

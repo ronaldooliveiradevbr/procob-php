@@ -5,10 +5,11 @@ PHP SDK para a [API REST](https://api.procob.com/) da Procob S.A.
 ## Exemplo de uso
 
 ```php
-$procob = new Procob\Procob($apiKey);
-$response = $procob->send('GET', 'teste');
+$procob = new Procob\Procob($credentials);
 
-var_dump($response);
+$person = $procob->person()->findByCpf($cpf);
+
+var_dump($person);
 ```
 
 

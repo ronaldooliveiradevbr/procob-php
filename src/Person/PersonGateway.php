@@ -18,12 +18,12 @@ class PersonGateway
     {
         $request  = new CompleteGet($cpf);
         $response = $this->procob->getResponse($request)
-                                 ->getBody()['nome'];
+                                 ->getBody();
 
-        if ($response->existe_informacao === "NAO") {
+        if ($response['nome']->existe_informacao === "NAO") {
             return null;
         }
 
-        return PersonFactory::create($response->conteudo[0]);
+        return PersonFactory::create($response['nome']->conteudo[0]);
     }
 }

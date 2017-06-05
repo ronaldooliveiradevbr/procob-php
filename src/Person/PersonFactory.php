@@ -15,39 +15,39 @@ class PersonFactory implements Factory
 {
     public static function create($personData)
     {
+        if (is_null($personData)) {
+            return null;
+        }
+
         if (is_object($personData)) {
             $personData = (array) $personData;
         }
 
-        $person = new Person();
-        $person->setDocument($personData['documento'])
-               ->setName($personData['nome'])
-               ->setAge($personData['idade'])
-               ->setGender($personData['sexo'])
-               ->setObituary($personData['obito'])
-               ->setZodiacSign($personData['signo'])
-               ->setLivedIn($personData['uf'])
-               ->setIrpfStatus($personData['situacao_receita']);
+        $birthday = DateTimeImmutable::createFromFormat(
+            "d/m/Y",
+            $personData['data_nascimento']
+        );
 
-        $person->setBirthday(
-            DateTimeImmutable::createFromFormat(
-                "d/m/Y",
-                $personData['data_nascimento']
+        $irpfVerifiedAt = DateTimeImmutable::createFromFormat(
+            "Y-m-d H:i:s",
+            sprintf(
+                "%s %s",
+                $personData['situacao_receita_data'],
+                $personData['situacao_receita_hora']
             )
         );
 
-        $verifiedAt = sprintf(
-            "%s %s",
-            $personData['situacao_receita_data'],
-            $personData['situacao_receita_hora']
+        return new Person(
+            $personData['documento'],
+            $personData['nome'],
+            $birthday,
+            $personData['idade'],
+            $personData['sexo'],
+            $personData['obito'],
+            $personData['signo'],
+            $personData['uf'],
+            $personData['situacao_receita'],
+            $irpfVerifiedAt
         );
-        $person->setIrpfVerifiedAt(
-            DateTimeImmutable::createFromFormat(
-                "Y-m-d H:i:s",
-                $verifiedAt
-            )
-        );
-
-        return $person;
     }
 }
