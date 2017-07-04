@@ -6,11 +6,11 @@ use Procob\Contracts\RequestInterface;
 
 class CompleteGet implements RequestInterface
 {
-    private $cpf;
+    private $document;
 
-    public function __construct($cpf)
+    public function __construct($document)
     {
-        $this->cpf = $cpf;
+        $this->document = $document;
     }
 
     public function method()
@@ -20,6 +20,9 @@ class CompleteGet implements RequestInterface
 
     public function uri()
     {
-        return sprintf('L0001/%s', $this->cpf);
+        return sprintf(
+            'L0001/%s',
+            $this->document
+        );
     }
 }

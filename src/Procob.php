@@ -13,6 +13,7 @@ use \GuzzleHttp\Client as HttpClient;
 use \GuzzleHttp\Psr7\Request;
 use Procob\Contracts\RequestInterface;
 use Procob\Person\PersonGateway;
+use Procob\Company\CompanyGateway;
 
 class Procob
 {
@@ -27,14 +28,19 @@ class Procob
     private $httpClient;
 
     /**
-     * @var Procob\Response
+     * @var string
      */
     private $response;
 
     /**
      * @var Procob\Persons\PersonGateway
      */
-    private $person;
+    private $persons;
+
+    /**
+     * @var Procob\Company\CompanyGateway
+     */
+    private $companies;
 
     /**
      * Procob's API facade constructor.
@@ -92,10 +98,8 @@ class Procob
         try {
             $response = $this->httpClient->send($request);
 
-            return $this->response = new Response(
-                json_decode(
-                    $response->getBody()->getContents()
-                )
+            return $this->response = json_decode(
+                $response->getBody()->getContents()
             );
         } catch (\GuzzleHttp\Exception\ClientException $exception) {
             $response = $exception->getResponse()
@@ -123,12 +127,21 @@ class Procob
         return $this->response;
     }
 
-    public function person()
+    public function persons()
     {
-        if ($this->person instanceof PersonGateway) {
-            return $this->person;
+        if ($this->persons instanceof PersonGateway) {
+            return $this->persons;
         }
 
-        return $this->person = new PersonGateway($this);
+        return $this->persons = new PersonGateway($this);
+    }
+
+    public function companies()
+    {
+        if ($this->companies instanceof CompanyGateway) {
+            return $this->companies;
+        }
+
+        return $this->companies = new CompanyGateway($this);
     }
 }
