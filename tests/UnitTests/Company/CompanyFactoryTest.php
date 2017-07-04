@@ -1,6 +1,6 @@
 <?php
 
-namespace Procob\Tests\UnitTests\Procob\Company;
+namespace ProcobTests\UnitTests\Company;
 
 use \PHPUnit\Framework\TestCase;
 use Procob\Company\Company;

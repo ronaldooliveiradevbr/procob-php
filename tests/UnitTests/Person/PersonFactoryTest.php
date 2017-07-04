@@ -1,12 +1,10 @@
 <?php
 
-namespace Procob\Tests\UnitTests\Procob\Person;
+namespace ProcobTests\UnitTests\Person;
 
-use \DateTimeImmutable;
+use \PHPUnit\Framework\TestCase;
 use Procob\Person\Person;
 use Procob\Person\PersonFactory;
-use \Faker\Provider\pt_BR\Person as FakerPerson;
-use \PHPUnit\Framework\TestCase;
 
 class PersonFactoryTest extends TestCase
 {
@@ -16,7 +14,6 @@ class PersonFactoryTest extends TestCase
     public function mustCreatePersonObject()
     {
         $responseGet = json_decode($this->responseGet());
-
         $person = PersonFactory::create($responseGet);
 
         $this->assertInstanceOf(
