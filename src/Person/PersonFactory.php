@@ -1,6 +1,6 @@
 <?php
 /**
- * Procob API Persons factory
+ * Procob API Person's factory
  *
  * @author Ronaldo Oliveira <rfdeoliveira.pmsp@gmail.com>
  * @version 1.0.0
@@ -13,15 +13,23 @@ use Procob\Contracts\FactoryInterface as Factory;
 
 class PersonFactory implements Factory
 {
-    public static function create($personData)
+    public static function create($response)
     {
-        if (is_null($personData)) {
+        if (! is_object($response)) {
             return null;
         }
 
-        if (is_object($personData)) {
-            $personData = (array) $personData;
+        if ('000' != $response->code) {
+            return null;
         }
+
+        if ('NAO' == $response->content->nome->existe_informacao) {
+            return null;
+        }
+
+        $personData = get_object_vars(
+            $response->content->nome->conteudo[0]
+        );
 
         $birthday = DateTimeImmutable::createFromFormat(
             "d/m/Y",

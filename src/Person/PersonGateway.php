@@ -17,13 +17,9 @@ class PersonGateway
     public function findByCpf($cpf)
     {
         $request  = new CompleteGet($cpf);
-        $response = $this->procob->getResponse($request)
-                                 ->getBody();
 
-        if ($response['nome']->existe_informacao === "NAO") {
-            return null;
-        }
-
-        return PersonFactory::create($response['nome']->conteudo[0]);
+        return PersonFactory::create(
+            $this->procob->getResponse($request)
+        );
     }
 }
