@@ -7,7 +7,7 @@ PHP SDK para a [API REST](https://api.procob.com/) da Procob S.A.
 ```php
 $procob = new Procob\Procob($credentials);
 
-$person = $procob->person()->findByCpf($cpf);
+$person = $procob->persons()->findByCpf($cpf);
 
 var_dump($person);
 ```
@@ -22,7 +22,7 @@ $apiKey = base64_encode('username:password');
 ```
 
 
-#### ou um array no formato:
+#### ou um array:
 
 ```php
 $credentials = array('username', 'password');
