@@ -10,6 +10,8 @@ namespace Procob;
 
 use \InvalidArgumentException;
 use \GuzzleHttp\Client as HttpClient;
+use \GuzzleHttp\Exception\ClientException;
+use \GuzzleHttp\Exception\RequestException;
 use \GuzzleHttp\Psr7\Request;
 use Procob\Contracts\RequestInterface;
 use Procob\Person\PersonGateway;
@@ -20,7 +22,17 @@ class Procob
     /**
      * @var string
      */
-    private $baseUri = "https://api.procob.com/consultas/v1/";
+    const HOST = "https://api.procob.com/consultas";
+
+    /**
+     * @var string
+     */
+    const VERSION = "v1";
+
+    /**
+     * @var string
+     */
+    private $apiKey;
 
     /**
      * @var \GuzzleHttp\Client
@@ -54,10 +66,11 @@ class Procob
         $headers = [],
         $timeout = 30
     ) {
-        if (! (is_array($apiKey)
-            && count($apiKey) == 2)
-            && ! is_string($apiKey)
-        ) {
+        if (is_array($apiKey) && 2 == count($apiKey)) {
+            $this->apiKey = base64_encode(implode(':', $apiKey));
+        } elseif (is_string($apiKey)) {
+            $this->apiKey = $apiKey;
+        } else {
             throw new InvalidArgumentException(
                 sprintf(
                     "The API credentials %s are not valid",
@@ -66,16 +79,16 @@ class Procob
             );
         }
 
-        if (is_array($apiKey)) {
-            $apiKey = base64_encode(implode(':', $apiKey));
-        }
+        $baseUri = implode('/', [self::HOST, self::VERSION]);
 
-        $base_uri = $this->baseUri;
-
-        $headers['Authorization'] = "Basic {$apiKey}";
+        $headers['Authorization'] = "Basic {$this->apiKey}";
 
         $this->httpClient = new HttpClient(
-            compact('base_uri', 'headers', 'timeout')
+            compact(
+                'baseUri',
+                'headers',
+                'timeout'
+            )
         );
     }
 
@@ -94,9 +107,12 @@ class Procob
             $request->method(),
             $request->uri()
         );
+        var_dump($request->uri()); die;
 
         try {
+            var_dump($request); die;
             $response = $this->httpClient->send($request);
+
 
             return $this->response = json_decode(
                 $response->getBody()->getContents()
@@ -104,14 +120,16 @@ class Procob
         } catch (\GuzzleHttp\Exception\ClientException $exception) {
             $response = $exception->getResponse()
                                   ->getBody()
-                                  ->getContents();
+                                  ->getContents()
+            ;
 
             $code = $exception->getResponse()
-                              ->getStatusCode();
+                              ->getStatusCode()
+            ;
 
             throw new ClientException($response, $code);
         } catch (\GuzzleHttp\Exception\RequestException $exception) {
-            throw new ClientException(
+            throw new RequestException(
                 $exception->getMessage(),
                 $exception->getCode()
             );

@@ -16,7 +16,8 @@ class PersonGateway
 
     public function findByCpf($cpf)
     {
-        $request  = new CompleteGet($cpf);
+        $request = new CompleteGet($cpf);
+        var_dump($request); die;
 
         return PersonFactory::create(
             $this->procob->getResponse($request)

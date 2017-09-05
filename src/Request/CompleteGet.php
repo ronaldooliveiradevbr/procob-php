@@ -21,7 +21,7 @@ class CompleteGet implements RequestInterface
     public function uri()
     {
         return sprintf(
-            'L0001/%s',
+            '/L0001/%s',
             $this->document
         );
     }
