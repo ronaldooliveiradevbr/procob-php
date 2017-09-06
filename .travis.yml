@@ -10,9 +10,11 @@ before_install:
   - travis_retry composer self-update
 
 install:
-  - travis_retry composer install --no-interaction --prefer-source --dev
+  - travis_retry composer install --no-interaction --prefer-source
 
 matrix:
   allow_failures:
+    - php: 7.0
+    - php: 7.1
     - php: hhvm
   fast_finish: true
