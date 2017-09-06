@@ -12,7 +12,7 @@ use \InvalidArgumentException;
 use \GuzzleHttp\Client as HttpClient;
 use \GuzzleHttp\Exception\ClientException;
 use \GuzzleHttp\Exception\RequestException;
-use \GuzzleHttp\Psr7\Request;
+use \GuzzleHttp\Psr7\Request as HttpRequest;
 use Procob\Contracts\RequestInterface;
 use Procob\Person\PersonGateway;
 use Procob\Company\CompanyGateway;
@@ -103,14 +103,12 @@ class Procob
      */
     public function send(RequestInterface $request)
     {
-        $request = new Request(
+        $request = new HttpRequest(
             $request->method(),
             $request->uri()
         );
-        var_dump($request->uri()); die;
 
         try {
-            var_dump($request); die;
             $response = $this->httpClient->send($request);
 
 
