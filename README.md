@@ -1,6 +1,8 @@
 # procob-php
 PHP SDK para a [API REST](https://api.procob.com/) da Procob S.A.
 
+[![Build Status](https://travis-ci.org/rfdeoliveira/procob-php.svg?branch=master)](https://travis-ci.org/rfdeoliveira/procob-php)
+
 
 ## Exemplo de uso
 
